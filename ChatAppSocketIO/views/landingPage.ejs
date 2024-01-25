@@ -1,0 +1,235 @@
+<html lang="">
+
+<head>
+    <meta charset="utf-8">
+    <title>Chat App</title>
+    <style>
+        /* Add your custom CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .chat-box {
+            border: 2px solid #ccc;
+            padding: 10px;
+            height: 400px;
+            overflow-y: scroll;
+            width: 100%;
+        }
+
+        .message {
+            margin-bottom: 10px;
+        }
+
+        .message .sender {
+            font-weight: bold;
+        }
+
+        .message .timestamp {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .input-group {
+            display: flex;
+            margin-top: 20px;
+        }
+
+        .input-group input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .input-group button {
+            padding: 10px 20px;
+            margin-left: 10px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .main-box {
+            display: flex;
+            flex-direction: row;
+            align-items: start;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .tab-box {
+            border: 2px solid #ccc;
+            height: 400px;
+            padding: 10px;
+            /* padding-top: 5px; */
+        }
+
+        .tab-box h2 {
+            text-align: center;
+            margin: 0;
+
+            border-bottom: 2px solid #ccc;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Chat App</h1>
+            <p>Start chatting with your friends!</p>
+        </header>
+
+        <div class="main-box">
+            <div class="tab-box">
+                <h2>Chats</h2>
+                <input style="margin-top: 1rem; padding: .5rem;" type="text" placeholder="Enter a username"
+                    id="room-input">
+                <div style="margin-top: 1rem; padding: .5rem; border: 1px solid #ccc; border-radius: 4px;">
+                    <h2>Current Room</h2>
+                    <p id="current-room-name"></p>
+                </div>
+            </div>
+            <div class="chat-box">
+
+            </div>
+        </div>
+
+        <div class="input-group">
+            <input id="text-box" type="text" placeholder="Type your message...">
+            <button id="send-button">Send</button>
+        </div>
+    </div>
+    <!-- ! Scripts -->
+    <script type="module">
+    </script>
+
+    <script type="module">
+        import { io } from "https://cdn.socket.io/4.7.3/socket.io.esm.min.js";
+        console.log("io", io)
+        const socket = io('ws://localhost:3000');
+        console.log("socket", socket)
+
+        // DOM elements
+        const chatBox = document.querySelector('.chat-box');
+        const input = document.querySelector('#text-box');
+        const btn = document.querySelector('#send-button');
+
+        //currentRoom details - 
+        let currentRoom = null;
+        const roomInput = document.querySelector('#room-input');
+        const currentRoomName = document.querySelector('#current-room-name');
+
+        roomInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                socket.emit('join room', { sender: `<%= user.username %>`, receiver: roomInput.value })
+                roomInput.value = '';
+            }
+        });
+
+        socket.on('join room', (msg) => {
+            if (currentRoom) {
+                socket.emit('leave room', { room: currentRoom })
+            }
+            console.log(msg)
+            currentRoom = msg.roomName;
+            currentRoomName.innerHTML = msg.roomName;
+
+            chatBox.innerHTML = '';
+            const message = document.createElement('div');
+            message.classList.add('message');
+            message.innerHTML = `
+                <span class="sender"> ${msg.sender} JOINED ROOM - ${msg.roomName} </span>
+            `;
+            chatBox.appendChild(message);
+
+        })
+
+        // Add event listener to the button
+        btn.addEventListener('click', (e) => {
+            if (input.value.length < 1) return;
+
+            socket.emit('stop typing', { id: socket.id, room: currentRoom })
+
+            //message to be sent
+            const message = input.value;
+            const sender = `<%= user.username %>`;
+
+            //send message to server
+            socket.emit('chat message', { sender, message, room: currentRoom });
+
+            //remove the message from the input box
+            input.value = '';
+        })
+
+        // emiting the typing event
+        input.addEventListener('keypress', (e) => {
+            if (input.value.length < 1) return;
+
+            socket.emit('typing', { sender: `<%= user.username%>`, room: currentRoom })
+        })
+
+        //! listening for typing event
+        socket.on('typing', (msg) => {
+            if (document.getElementsByClassName('typing-message').length > 0) return;
+
+            const message = document.createElement('div');
+            message.classList.add('typing-message');
+            message.innerHTML = `
+                <span class="sender"> ${msg.sender} is typing</span>
+                    `;
+            chatBox.appendChild(message);
+        })
+
+        //! listening for the stop typing event
+        socket.on('stop typing', (msg) => {
+            const message = document.querySelector('.typing-message');
+            message.remove();
+        })
+
+        //listening for the incoming messages
+        socket.on('server message', (msg) => {
+            const message = document.createElement('div');
+            message.classList.add('message');
+            message.innerHTML = `
+                    <span class="sender"> ${msg.sender}</span>
+                <span class="timestamp"><b>${msg.date}</b> <i>${msg.time}</i></span>
+                <p>${msg.msg}</p>
+            `;
+
+            chatBox.appendChild(message);
+        })
+
+        //listening for the connection and disconnection messages
+        socket.on('conDiscon message', (msg) => {
+            const message = document.createElement('div');
+            message.classList.add('message');
+            message.innerHTML = `
+                <span class="sender"> ${msg}</span>
+            `;
+
+            chatBox.appendChild(message);
+        })
+    </script>
+</body>
+
+</html>

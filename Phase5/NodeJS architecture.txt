@@ -1,0 +1,21 @@
+NODE JS ARCHITECTURE 
+
+Blocking and Non Blocking Operations
+
+Javascript is blocking and single-threaded due to which Javascript can only execute one operation at a time and in single threaded manner
+
+We have Libuv library for handling multiple requests by delegating it in a non-blocking fashion.
+
+But how we are able to handle multiple requests by just a single thread? Despite being single-threaded, Node.js can handle multiple requests with its asynchronous behavior. This is made possible through the use of the Libuv library, which helps manage asynchronous processing in the Node.js runtime environment. The Libuv library enables Node.js to efficiently handle multiple requests, even with its single-threaded architecture, by allowing tasks to be executed in a non-blocking fashion, without having to wait for the completion of one task before starting another.
+
+What is Libuv?
+The Libuv library is a key component in the Node.js runtime environment, responsible for handling asynchronous, non-blocking operations. It’s written in the C language and is open-source and cross-platform. The library abstracts away the complexity of interacting with the operating system by leveraging two crucial features: the thread pool and the event loop. Although these are two of the most important features, there is much more to the Libuv library
+
+Now let’s take a look at asynchronous code execution. In asynchronous code execution, we have three console.log statements. In the second statement, it is inside a callback function that is passed to fs.readFile(). The first statement is the console.log(“START”) function which is pushed into the call stack, and “START” is logged in the console. Then, fs.readFile() is pushed into the call stack. As the operation is asynchronous, its callback function is passed to Libuv which starts to read the file contents on a separate thread. Meanwhile, fs.readFile() is removed from the call stack, and the next console.log(“END”) statement is pushed in, logged in the console, and then removed from the stack.
+
+Thread Pool
+JavaScript is single-threaded, but in NodeJS, the Libuv open-source library provides a way to implement time-consuming or CPU-intensive operations by not blocking the main thread. The main thread offloads these operations to the Libuv. Libuv has a pool of threads that can use to run some time-consuming tasks. When tasks are done, the associated callback function can be run.
+
+“Libuv thread pool as the name indicates is literally a pool of threads, that NodeJS uses to offload time-consuming tasks and ensures the main thread is not blocked for a long time.”
+
+Every method in NodeJS that has a “sync” suffix always runs on the main thread.

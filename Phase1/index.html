@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debugging</title>
+</head>
+<body>
+    
+    <script src="7_debugging.js">
+    </script>
+    <script>
+        function objParameter(name){
+            name.name = "Soyantar"
+        }
+
+        let name = {
+            name: "Naineel" 
+        }
+        console.log(name)
+        objParameter(name);
+        console.log(name)
+    </script>
+</body>
+</html>

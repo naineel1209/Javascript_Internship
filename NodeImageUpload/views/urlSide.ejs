@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Uploader</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            text-align: center;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .upload-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .upload-form #file {
+            margin-bottom: 10px;
+            border: 2px solid;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .upload-form input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .compress {
+            margin: auto;
+            word-wrap: break-word;
+            max-width: 70vw;
+
+            border: 2px solid;
+            padding: 10px;
+            border-radius: 5px;
+            position: relative;
+        }
+
+        .compress:hover #toolTip {
+            display: block;
+            transition: all 300ms ease-in-out;
+        }
+
+        #toolTip {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 300ms ease-in-out;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Image Uploader</h1>
+        <!-- !mentioning the url of the file and the token generated -->
+        <h3>URL: <a href="<%= `${url}` %>">
+                <%= url %>
+            </a></h3>
+        <div class="compress">
+            <%= token %>
+
+                <p id="toolTip">Kindly copy this code and save it for further use... </p>
+        </div>
+    </div>
+
+    <script>
+        async function handleClick() {
+            var copyText = `<%= token %>`;
+            await navigator.clipboard.writeText(copyText);
+            alert("Copied the text: " + copyText);
+        }
+
+        document.getElementById("toolTip").addEventListener("click", handleClick);
+
+    </script>
+</body>
+
+</html>

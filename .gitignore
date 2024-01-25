@@ -1,0 +1,12 @@
+ChatAppSocketIO/node_modules/**/*
+InfluencerProject/node_modules/**/*
+LibraryManagementMongo/
+LibraryManagementProject/
+Node_Typescript/node_modules/**/*
+NodeImageUpload/node_modules/**/*
+Revision/**/*
+ServerSentEvents/node_modules/**/*
+Phase4/**/*
+Phase8_Express/node_modules/**/*
+Streams_Final/
+LibraryManagementMongo/LibraryManagementProject
