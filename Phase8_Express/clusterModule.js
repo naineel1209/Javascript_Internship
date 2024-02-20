@@ -5,8 +5,8 @@ if (cluster.isMaster) {
     console.log(`Master ${process.pid} is running`);
 
 
-    cluster.fork();
-    cluster.fork();
+    cluster.fork(); // fork the process
+    cluster.fork(); // fork the process
 } else {
     // if (Math.random() > 0.6) {
     //     console.log(`Worker ${process.pid} started`);
