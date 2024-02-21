@@ -19,7 +19,9 @@ export const generateOrder = async () => {
             const storedFile = await generateInvoice(order);
 
             console.log(`[x] Invoice generated for order ${order.id} at ${storedFile}`);  // log message to console
-        })
+
+            channel.ack(msg);  // acknowledge the message
+        }, { noAck: false })
     } catch (err) {
         console.log(err);
     }
