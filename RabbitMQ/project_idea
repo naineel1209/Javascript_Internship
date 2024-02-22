@@ -1,2 +1,8 @@
 OrderPage - different products - press cart button - successful order - transfer the message to generate OrderInvoice in the background - 
 Press the notify when the price is down - go to the message queue 
+
+
+Notes - 
+1. topic exchange is just direct exchange with a receiver using a wildcard character
+2. headers exchange is setting the headers instead of the routing key and then while matching we can keep the 'x-match' : 'any, all' or custom names as per our suiting.
+
