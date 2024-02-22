@@ -1,0 +1,25 @@
+syntax="proto3";
+
+message User{
+    string name = 1;
+    string email = 2;
+    int32 age = 3;
+}
+
+message UserGreeting{
+    string greeting = 1;
+}
+
+// message Post{
+//     string title = 1;
+//     string description = 2;
+//     User author = 3;
+// }
+
+// message PostList{
+//     repeated Post posts = 1;
+// }
+
+service GetUserService{
+    rpc GetUser(User) returns (UserGreeting) {}
+}
