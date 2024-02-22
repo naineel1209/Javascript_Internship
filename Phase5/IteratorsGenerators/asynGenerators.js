@@ -6,9 +6,9 @@ let customRange = {
         while (true) {
             const student = await getStudentId(i++)
             if (student) {
-                yield student
+                yield student // this returns { value: student, done: false }
             } else {
-                return;
+                return; // this returns { done: true }
             }
         }
 
