@@ -27,4 +27,4 @@ export const senddirect = async (logType, msg = message) => {
     }
 };
 
-senddirect("error");  // call the function to send the message to the exchange
+senddirect("info");  // call the function to send the message to the exchange

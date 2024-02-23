@@ -15,7 +15,7 @@ export const receivedirect = async () => {
         //assert exchange and assert queue and bind the queue to the exchange
         await channel.assertExchange(directExchange, "direct", { durable: true });
 
-        const q = await channel.assertQueue("", { exclusive: true });
+        const q = await channel.assertQueue("directExchangeQueue", { exclusive: true });
 
         //bind our queue to the exchange
         logTypes.forEach((logType) => {
