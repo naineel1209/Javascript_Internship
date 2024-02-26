@@ -1,9 +1,18 @@
-import jwt from "jsonwebtoken"
+import jwt, { JwtPayload } from "jsonwebtoken"
+import { Request, Response, NextFunction } from "express";
 
-export async function isAuthenticated(req, res, next) {
+declare global {
+    namespace Express {
+        interface Request {
+            user: string | JwtPayload;
+        }
+    }
+}
+
+export async function isAuthenticated(req: Request, res: Response, next: NextFunction) {
     try {    //Bearer <token>
-        const token = req.headers['Authorization'].split(" ")[1];
 
+        const token = (req.headers['authorization'] as string)?.split(" ")[1];
         const user = await jwt.verify(token, 'secret12345');
 
 
@@ -11,8 +20,6 @@ export async function isAuthenticated(req, res, next) {
         next();
     } catch (err) {
         console.log(err);
-        return res.status(401).send({
-            message: "not registered"
-        })
+        throw new Error("401:Unauthenticated");
     }
 }
