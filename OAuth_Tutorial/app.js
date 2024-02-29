@@ -42,15 +42,12 @@ app.get('/auth/microsoft/callback', async (req, res) => {
 
     //get the token
     try {
-        const tokenResponse = await axios({
-            method: 'POST',
-            url: microsoftConfig.tokenUrl,
-            data: {
-                client_id: microsoftConfig.clientId,
-                client_secret: microsoftConfig.clientSecret,
-                redirect_uri: microsoftConfig.redirectUrl,
-                grant_type: 'authorization_code'
-            }
+        const tokenResponse = await axios.post(microsoftConfig.tokenUrl, {
+            client_id: microsoftConfig.clientId,
+            client_secret: microsoftConfig.clientSecret,
+            redirect_uri: microsoftConfig.redirectUrl,
+            grant_type: 'authorization_code',
+            scope: microsoftConfig.scopes.join(' ')
         })
         const response = tokenResponse.data;
         console.log(response);
