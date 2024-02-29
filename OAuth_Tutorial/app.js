@@ -1,5 +1,7 @@
 const express = require('express')
 const session = require('express-session')
+const axios = require('axios')
+const { url } = require('inspector')
 
 const app = express()
 
@@ -31,10 +33,31 @@ app.get('/auth/microsoft', (req, res) => {
     res.redirect(redirectUrl)
 })
 
-app.get('/auth/microsoft/callback', (req, res) => {
+app.get('/auth/microsoft/callback', async (req, res) => {
     const { code } = req.query
 
-    console.log(code);
+    if (!code) {
+        return res.send("Authentication failed")
+    }
+
+    //get the token
+    try {
+        const tokenResponse = await axios({
+            method: 'POST',
+            url: microsoftConfig.tokenUrl,
+            data: {
+                client_id: microsoftConfig.clientId,
+                client_secret: microsoftConfig.clientSecret,
+                redirect_uri: microsoftConfig.redirectUrl,
+                grant_type: 'authorization_code'
+            }
+        })
+        const response = tokenResponse.data;
+        console.log(response);
+    } catch (err) {
+        console.log(err);
+        res.send("Authentication failed")
+    }
 })
 
 app.listen(3000, () => {
