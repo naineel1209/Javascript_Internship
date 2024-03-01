@@ -24,7 +24,7 @@ passport.use(new MicrosoftStrategy({
     clientID: "847cfbf2-5fd4-422a-a511-3278d6d8b386",
     clientSecret: "1sG8Q~kT3inOSopn2wN3YB3KczexdoPfBw_BEbLy",
     callbackURL: "http://localhost:3000/auth/microsoft/callback",
-    scope: ['User.read']
+    scope: ['User.read', 'offline_access']
 }, function (accessToken, refreshToken, profile, done) {
     console.log("accessToken ", accessToken)
     console.log("refreshToken ", refreshToken)
@@ -70,6 +70,7 @@ app.get('/home', (req, res, next) => {
 })
 
 app.get('/auth/microsoft/error', (req, res) => {
+    console.log(req.user)
     res.send('error has occured while authenticating')
 })
 
