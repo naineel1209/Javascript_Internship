@@ -9,6 +9,7 @@ config();
 const app = express()
 
 app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
 app.use(session({
     name: "sessionId",
     secret: process.env.SESSION_SECRET,
@@ -28,7 +29,7 @@ app.set('view engine', 'ejs')
 app.set('views', path.resolve(__dirname, "views"))
 
 app.get('/', (req, res) => {
-    res.send("not logged in still " + req.baseUrl + " " + req.ip)
+    res.send(`not logged in still [` + req.baseUrl + " " + req.ip + `] log in now at  - <a href="http://localhost:3000/auth/microsoft">Microsoft 🔬🍦</a> `)
 })
 
 app.use("/auth", require('./routes/auth.routes'))

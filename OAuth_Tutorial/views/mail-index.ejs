@@ -5,19 +5,99 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mail Index</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            width: max-content;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 20px;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        .mails>.container {
+            margin: 1rem;
+        }
+
+        .email-field {
+            margin-bottom: 10px;
+        }
+
+        .email-field label {
+            font-weight: bold;
+        }
+
+        .email-body {
+            border-top: 1px solid #ccc;
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 
 <body>
     Hello, <%= user.name %>
-
-        <pre>
+        <br />
+        <code>
         firstName: <%= user.firstName%>
         lastName: <%= user.lastName%>
                 jobTitle: <%= user.jobTitle%>
                         mail: <%= user.mail%>
                                 location: <%= user.location%>
                                         id: <%= user.id%>
-    </pre>
+    </code>
+        <a href="http://localhost:3000/mail/send">Send a Mail</a>
+
+        <div class="mails">
+            <% mails.forEach(function(email) { %>
+                <div class="container">
+                    <h2>Email Details</h2>
+                    <div class="email-field">
+                        <label>From:</label>
+                        <p>
+                            <%= email.sender.emailAddress.name %> &lt;<%= email.sender.emailAddress.address %>&gt;
+                        </p>
+                    </div>
+                    <div class="email-field">
+                        <label>To:</label>
+                        <% email.toRecipients.forEach(function(recipient) { %>
+                            <p>
+                                <%= recipient.emailAddress.name %>
+                            </p>
+                            <% }); %>
+                    </div>
+                    <div class="email-field">
+                        <label>Subject:</label>
+                        <p>
+                            <%= email.subject %>
+                        </p>
+                    </div>
+                    <div class="email-body">
+                        <p><%- email.body.content %></p>
+                    </div>
+                    <div class="email-field">
+                        <label>Received Date:</label>
+                        <p>
+                            <%= email.receivedDateTime %>
+                        </p>
+                    </div>
+                    <div class="email-field">
+                        <label>Web Link:</label>
+                        <p><a href="<%= email.webLink %>" target="_blank">View Email</a></p>
+                    </div>
+                </div>
+                <% }); %>
+
+        </div>
 </body>
 
 </html>
